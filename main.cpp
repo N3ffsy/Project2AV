@@ -33,11 +33,16 @@ int main(int argc, char* argv[]){
     if(!objAnti.checkIfVirusDatabaseExist())  {
         cout << "Could not find your Virus database. Try again!";
     }
+    else if(objAnti.checkVirusDatabaseSyntax(virusDb)) {
+        cout << "Ending program due to not supported database" << endl;
+    }
     else {
         try{
             objAnti.setVirusDatabaseData(virusDb);
             objAnti.checkAfterVirusInChoosenPath(dirToScan);
-            cout << dirToScan;
+
+
+
 
         }
         catch(fs::__cxx11::filesystem_error) {

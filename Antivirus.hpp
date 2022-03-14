@@ -31,7 +31,7 @@ class AntiVirus {
         ~AntiVirus();
 
         bool checkIfVirusDatabaseExist();
-        bool checkIfVirusDatabaseSyntax(); 
+        bool checkVirusDatabaseSyntax(string virusDatabaseFile); 
         void setVirusDatabaseData(string virusDatabaseNameFile);
         void checkAfterVirusInChoosenPath(string directory_path_to_scan);
 

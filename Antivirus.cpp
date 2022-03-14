@@ -22,14 +22,77 @@ AntiVirus::~AntiVirus() {
 bool AntiVirus::checkIfVirusDatabaseExist() {
 
     bool check = false;
+    
     if (fs::exists(this->virusDatabasepath)) {
         check = true;
     }
     return check;
 }
 
-bool AntiVirus::checkIfVirusDatabaseSyntax() {
+bool AntiVirus::checkVirusDatabaseSyntax(string virusDatabaseFile) {
     
+    // Kontrollzoner, vi börjar med =
+    //Andra zonen kollar så varje rad innehåler endast 1 =
+    //Tredje zonen Allt efter = ska vara tecken som tillåts i hexadecimala systemet {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','a','b','c','d','e','f'}
+
+    bool check = false;
+    int counter = 0;
+    char allowedHexacharsArray[22] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','a','b','c','d','e','f'};
+    string line;
+    ifstream checkFile (virusDatabaseFile);
+
+    if(checkFile.is_open()){
+        
+        while(getline(checkFile,line)) {
+            counter = 0;
+
+            if(line.find("=") != string::npos){
+                
+                for(int i = 0; i < line.length();i++) {
+                    if(line[i] == '=') {
+                        counter++;
+                    }
+                }
+
+                if(counter >= 2) {
+                    cout << "Not supported virusDatabase : To many \"=\" in line \"" << line << "\"" << endl;
+                    check = true;
+                    break;
+                }
+
+                string hexadecimal = line.substr(line.find("=") + 1,line.length());
+                bool notSupportedchar = false;
+
+
+                for(int i = 0; i < hexadecimal.length(); i++) {
+                    for(int n = 0; n < 22; n++) {
+                        if(hexadecimal[i] == allowedHexacharsArray[n]) {
+                            break;
+                        }
+                        if(n == 21) {
+                            notSupportedchar = true;
+                        }
+                    }
+
+
+                    if(notSupportedchar) {
+                        cout << "Not supported virusDatabase : Not allowed hexadeciaml character on line \"" << line << "\"" << endl;
+                        check = true;
+                        break;
+                    }
+
+                }
+
+
+            }
+            else {
+                cout << "Not supported virusDatabase : No \"=\" was found on \"" << line << "\"" << endl;
+                check = true;
+            }        
+        }
+    }
+    checkFile.close();
+    return check;
 }
 
 void AntiVirus::setVirusDatabaseData(string virusDatabasepath) {
@@ -124,13 +187,20 @@ bool AntiVirus::checkIfVIrusExistInfiles() {
                 sprintf(buffer,"%02hx",value);
                 hexstring += string(buffer);
         }
+        
 
         for (auto itr = virusDatabaseData.begin(); itr != virusDatabaseData.end(); itr++) {
             int length = itr->second.length() / 2;
-            if(hexstring.substr(0,length) == itr->second.substr(0,length)) {
+
+            if(hexstring.find(itr->second) != string::npos) {
                 report += "Virus with name " + itr->first + " was detected at path : " + fileArray[i] + "\n";
                 break;
             }
+
+            /*if(hexstring.substr(0,length) == itr->second.substr(0,length)) {
+                report += "Virus with name " + itr->first + " was detected at path : " + fileArray[i] + "\n";
+                break;
+            }*/
         }
         fileToCheck.close();
     }
