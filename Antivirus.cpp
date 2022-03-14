@@ -28,6 +28,10 @@ bool AntiVirus::checkIfVirusDatabaseExist() {
     return check;
 }
 
+bool AntiVirus::checkIfVirusDatabaseSyntax() {
+    
+}
+
 void AntiVirus::setVirusDatabaseData(string virusDatabasepath) {
     if(this->virusDatabasepath != "signatures.db") {
         insertDataInMap(this->virusDatabasepath + "/signatures.db");
