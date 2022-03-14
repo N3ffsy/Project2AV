@@ -37,6 +37,7 @@ bool AntiVirus::checkVirusDatabaseSyntax(string virusDatabaseFile) {
 
     bool check = false;
     int counter = 0;
+    int linecounter = 0;
     char allowedHexacharsArray[22] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','a','b','c','d','e','f'};
     string line;
     ifstream checkFile (virusDatabaseFile);
@@ -45,6 +46,7 @@ bool AntiVirus::checkVirusDatabaseSyntax(string virusDatabaseFile) {
         
         while(getline(checkFile,line)) {
             counter = 0;
+            linecounter++;
 
             if(line.find("=") != string::npos){
                 
@@ -55,7 +57,7 @@ bool AntiVirus::checkVirusDatabaseSyntax(string virusDatabaseFile) {
                 }
 
                 if(counter >= 2) {
-                    cout << "Not supported virusDatabase : To many \"=\" in line \"" << line << "\"" << endl;
+                    cout << "Not supported virusDatabase : To many \"=\" on line " << linecounter << endl;
                     check = true;
                     break;
                 }
@@ -76,7 +78,7 @@ bool AntiVirus::checkVirusDatabaseSyntax(string virusDatabaseFile) {
 
 
                     if(notSupportedchar) {
-                        cout << "Not supported virusDatabase : Not allowed hexadeciaml character on line \"" << line << "\"" << endl;
+                        cout << "Not supported virusDatabase : Not allowed hexadeciaml character on line " << linecounter << endl;
                         check = true;
                         break;
                     }
@@ -86,7 +88,7 @@ bool AntiVirus::checkVirusDatabaseSyntax(string virusDatabaseFile) {
 
             }
             else {
-                cout << "Not supported virusDatabase : No \"=\" was found on \"" << line << "\"" << endl;
+                cout << "Not supported virusDatabase : No \"=\" was found on line " << linecounter << endl;
                 check = true;
             }        
         }
